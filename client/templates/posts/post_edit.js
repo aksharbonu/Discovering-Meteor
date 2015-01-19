@@ -18,6 +18,9 @@ Template.postEdit.events({
       if (result.postExists)
         alert('This link has already been posted');
 
+      if (result.illegalEdit)
+        alert('You do not have permission to do this');
+
       Router.go('postPage', {_id: result._id});  
     });
   },
