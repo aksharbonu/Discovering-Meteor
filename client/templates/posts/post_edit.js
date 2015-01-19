@@ -1,3 +1,15 @@
+Template.postEdit.created = function() {
+  Session.set('postEditErrors', {});
+}
+Template.postEdit.helpers({
+  errorMessage: function(field) {
+    return Session.get('postEditErrors')[field];
+  },
+  errorClass: function (field) {
+    return !!Session.get('postEditErrors')[field] ? 'has-error' : '';
+  }
+});
+
 Template.postEdit.events({
   'submit form': function(e) {
     e.preventDefault();
@@ -8,6 +20,10 @@ Template.postEdit.events({
       url: $(e.target).find('[name=url]').val(),
       title: $(e.target).find('[name=title]').val()
     }
+
+    var errors = validatePost(postProperties);
+    if (errors.title || errors.url)
+      return Session.set('postEditErrors', errors);
 
     Meteor.call('postEdit', postProperties, currentPostId, function(error, result) {
       // display the error to the user and abort
